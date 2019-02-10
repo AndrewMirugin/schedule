@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Настройки
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-item no-lines>
+    <ion-label>Расписание для </ion-label>
+    <ion-select [(ngModel)]="userType" required cancelText="Отмена">
+      <ion-option value="student" >Студента</ion-option>
+      <ion-option value="teacher" >Преподавателя</ion-option>
+    </ion-select>
+  </ion-item>
+
+  <div *ngIf="userType=='teacher'; then famBlock"></div>
+
+  <form (ngSubmit)="isValid(f.value)" #f="ngForm">
+    <ion-item *ngIf="userType=='student'">
+      <ion-label floating>Введите курс</ion-label>
+      <ion-input type="number" [(ngModel)]="kursNumber" name="kursNumber" required></ion-input>
+    </ion-item>
+    <ion-item *ngIf="userType=='student'">
+      <ion-label floating>Введите группу</ion-label>
+      <ion-input type="number" name="groupNumber" [(ngModel)]="groupNumber" required></ion-input>
+    </ion-item>
+    <ion-item *ngIf="userType=='student'" no-lines>
+      <ion-label>Выберете подгруппу</ion-label>
+      <ion-select ngModel name="groupType" cancelText="Отмена" required>
+        <ion-option value="А">А</ion-option>
+        <ion-option value="Б">Б</ion-option>
+        <ion-option value="Вся группа">Вся группа</ion-option>
+      </ion-select>
+    </ion-item>
+    <button *ngIf="userType=='student'" ion-button ngSubmit full [disabled]="!f.valid || userType==undefined">Сохранить</button>
+  </form>
+  <ng-template #famBlock>
+    <ion-searchbar placeholder="Введите фамилию" (ionInput)="updateTeachers($event)"></ion-searchbar>
+    <ion-list>
+      <ion-item *ngFor="let t of teachers | courseChoosing: teacherFam" (click)="teacherGoHome(t)">
+        {{t}}
+      </ion-item>
+    </ion-list>
+  </ng-template>
+</ion-content>

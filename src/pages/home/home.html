@@ -1,0 +1,107 @@
+<meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
+<!--<div id="custom-overlay" [style.display]="splash ? 'flex': 'none'">-->
+<!--<div class="flb">-->
+<!--<div class="Aligner-item Aligner-item&#45;&#45;top"></div>-->
+<!--<img src="assets/icon/logo.png">-->
+<!--<div class="Aligner-item Aligner-item&#45;&#45;bottom"></div>-->
+<!--</div>-->
+<!--</div>-->
+
+
+<ion-header>
+  <ion-navbar>
+    <ion-title>Расписание</ion-title>
+
+    <ion-buttons *ngIf="userIs=='student'" end>
+        <button ion-button small round clear (click)="changeSubGroup()">{{settingsInfo.groupType}}</button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher *ngIf="userIs!=undefined||userIs!=null" (ionRefresh)="update($event)">
+    <ion-refresher-content pullingIcon="arrow-dropdown"
+                           pullingText="Потяните для обновления"
+                           refreshingText="Обновление..."></ion-refresher-content>
+  </ion-refresher>
+
+  <div [ngSwitch]="userIs">
+    <ng-template ngSwitchCase="student">
+      <ion-list no-lines no-padding>
+        <ion-slides>
+          <ion-slide *ngFor="let d of daysArray">
+            <h1>{{d.day}}</h1>
+            <ion-list>
+              <div *ngFor="let s of d.subjects">
+                <ion-item *ngIf="s.subgroup==settingsInfo.groupType || s.subgroup==''||s.subgroup==undefined||settingsInfo.groupType=='Вся группа'">
+                  <ion-row >
+                    <ion-col col-5>
+                      <h1>
+                        {{s.timeStart}}
+                      </h1>
+                    </ion-col>
+                    <ion-col col-7 style="text-align: right">
+                      <h1>Ауд: {{s.lectureHall}}</h1>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>{{s.subject}}</ion-col>
+                  </ion-row>
+                  <ion-note >
+                    <ion-row>
+                      <ion-col col-10>{{s.teacher}}</ion-col>
+                      <ion-col col-1>{{s.subgroup}}</ion-col>
+                      <ion-col col-1>{{s.type}}</ion-col>
+                    </ion-row>
+                  </ion-note>
+                </ion-item>
+              </div>
+            </ion-list>
+          </ion-slide>
+        </ion-slides>
+      </ion-list>
+    </ng-template>
+    <ng-template ngSwitchCase="teacher">
+      <ion-list no-lines no-padding>
+        <ion-slides>
+          <ion-slide *ngFor="let t of teacherTimetable">
+            <h1>{{t.day}}</h1>
+            <ion-list>
+                <ion-item *ngFor="let s of t.spis">
+                  <ion-row>
+                    <ion-col col-5>
+                      <h1>
+                        {{s.timeStart}}
+                      </h1>
+                    </ion-col>
+                    <ion-col col-7 style="text-align: right">
+                      <h1>Ауд: {{s.lectureHall}}</h1>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row >
+                    <ion-col>{{s.subject}}</ion-col>
+                  </ion-row>
+                  <ion-note>
+                    <ion-row >
+                      <ion-col (click)="presentModal(s.additional)" col-10>
+                        Подробнее
+                      </ion-col>
+                      <ion-col col-1>
+                        {{s.week}}
+                      </ion-col>
+                      <ion-col col-1>
+                        {{s.type}}
+                      </ion-col>
+                    </ion-row>
+                  </ion-note>
+                </ion-item>
+            </ion-list>
+          </ion-slide>
+        </ion-slides>
+      </ion-list>
+    </ng-template>
+    <ng-template ngSwitchDefault>
+      <div padding><h2>Здесь будет отображаться расписание.Пожалуйста, заполните настройки для его отображения</h2></div>
+    </ng-template>
+  </div>
+</ion-content>

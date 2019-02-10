@@ -1,0 +1,7 @@
+{
+  "name": "Timetable",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular"
+}
